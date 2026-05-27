@@ -1,6 +1,0 @@
-from engine import linalg
-
-
-__all__ = [
-    "linalg"
-]

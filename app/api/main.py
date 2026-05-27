@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.routes import linalg
+from app.api.routes import linalg
 
 
 app = FastAPI()
