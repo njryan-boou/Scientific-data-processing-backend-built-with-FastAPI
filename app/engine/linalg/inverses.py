@@ -1,15 +1,16 @@
 import numpy as np
+from app.engine.utils import validation, exceptions
 
+def inverse(matrix: list[list[float]]) -> list[list[float]]:
 
-def inverse(matrix):
-
-    arr = np.array(matrix, dtype=float)
+    arr = validation.asarray(matrix)
+    validation.validate_square(arr)
 
     try:
-        inv = np.linalg.inv(arr)
+        inv = np.linalg.inv(arr).tolist()
 
     except np.linalg.LinAlgError:
 
-        raise ValueError("Matrix is singular")
+        raise exceptions.SingularMatrixError("Matrix is singular")
 
-    return inv.tolist()
+    return inv

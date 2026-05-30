@@ -1,9 +1,11 @@
 import numpy as np
+from app.engine.utils import validation
 
 
-def determinant(matrix):
+def determinant(matrix: list[list[float]]) -> float:
     
 
-    arr = np.array(matrix, dtype=np.float64)
+    arr = validation.asarray(matrix)
+    validation.validate_square(matrix)
 
     return float(np.linalg.det(arr))

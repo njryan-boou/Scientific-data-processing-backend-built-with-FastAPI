@@ -1,5 +1,5 @@
 from pydantic import BaseModel, field_validator
-
+from app.engine.utils import validation
 
 class MatrixRequest(BaseModel):
 
@@ -10,16 +10,10 @@ class MatrixRequest(BaseModel):
     def validate_matrix(cls, value):
 
         # Matrix cannot be empty
-        if not value:
-            raise ValueError(
-                "Matrix cannot be empty"
-            )
+        validation.validate_empty_array(value)
 
         # Rows cannot be empty
-        if not all(value):
-            raise ValueError(
-                "Matrix rows cannot be empty"
-            )
+        validation.validate_empty_matrix_rows(value)
 
         # Ensure rectangular matrix
         row_lengths = {
@@ -33,6 +27,7 @@ class MatrixRequest(BaseModel):
 
         return value
     
+    
 
 class DeterminantResponse(BaseModel):
 
@@ -42,3 +37,8 @@ class DeterminantResponse(BaseModel):
 class InverseResponse(BaseModel):
 
     inverse: list[list[float]]
+    
+    
+class TransposeResponse(BaseModel):
+
+    transpose: list[list[float]]
