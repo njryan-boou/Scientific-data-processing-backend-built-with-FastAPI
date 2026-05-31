@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.routes import linalg
+from app import logging_config
 
 
 app = FastAPI()

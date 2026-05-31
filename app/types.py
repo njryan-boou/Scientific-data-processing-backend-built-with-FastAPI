@@ -1,3 +1,3 @@
 
-MatrixType = list[list[float]]
-VectorType = list[float]
+Matrix = list[list[float]]
+Vector = list[float]

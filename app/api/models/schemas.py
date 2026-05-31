@@ -1,15 +1,15 @@
 from pydantic import BaseModel, field_validator
 from app.engine.utils import validation
 
-from app.types import MatrixType
+from app.types import Matrix
 
 class MatrixRequest(BaseModel):
 
-    matrix: MatrixType
+    matrix: Matrix
 
     @field_validator("matrix")
     @classmethod
-    def validate_matrix(cls, value):
+    def validate_matrix(cls, value: float) -> float:
 
         # Matrix cannot be empty
         validation.validate_empty_array(value)
@@ -18,14 +18,7 @@ class MatrixRequest(BaseModel):
         validation.validate_empty_matrix_rows(value)
 
         # Ensure rectangular matrix
-        row_lengths = {
-            len(row) for row in value
-        }
-
-        if len(row_lengths) != 1:
-            raise ValueError(
-                "All matrix rows must have equal length"
-            )
+        validation.validate_rectangular(value)
 
         return value
     
@@ -38,21 +31,21 @@ class DeterminantResponse(BaseModel):
     
 class InverseResponse(BaseModel):
 
-    inverse: MatrixType
+    inverse: Matrix
     
     
 class TransposeResponse(BaseModel):
 
-    transpose: MatrixType
+    transpose: Matrix
     
     
 class EigValResponse(BaseModel):
-    pass
+    eigenvalues: list[complex | float]
 
 
 class EigVectorResponse(BaseModel):
-    pass
+    eigenvectors: list[list[complex | float]]
 
 
 class TraceResponse(BaseModel):
-    pass
+    trace: float

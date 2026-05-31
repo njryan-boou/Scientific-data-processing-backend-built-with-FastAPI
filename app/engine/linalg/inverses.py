@@ -1,7 +1,8 @@
 import numpy as np
 from app.engine.utils import validation, exceptions
+from app.types import Matrix
 
-def inverse(matrix: list[list[float]]) -> list[list[float]]:
+def inverse(matrix: Matrix) -> Matrix:
 
     arr = validation.asarray(matrix)
     validation.validate_square(arr)

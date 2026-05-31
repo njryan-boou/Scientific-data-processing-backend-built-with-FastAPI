@@ -1,7 +1,8 @@
 import numpy as np
 from app.engine.utils import validation
+from app.types import Matrix
 
-def eigenvalues(matrix: list[list[float]]) -> list[complex]:
+def eigenvalues(matrix: Matrix) -> list[complex]:
     arr = validation.asarray(matrix)
     validation.validate_square(arr)
 
@@ -12,7 +13,7 @@ def eigenvalues(matrix: list[list[float]]) -> list[complex]:
     
     return vals.tolist()
 
-def eigenvectors(matrix: list[list[float]]) -> list[list[complex]]:
+def eigenvectors(matrix: Matrix) -> list[list[complex]]:
     arr = validation.asarray(matrix)
     validation.validate_square(arr)
 

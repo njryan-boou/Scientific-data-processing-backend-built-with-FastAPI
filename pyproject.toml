@@ -13,5 +13,11 @@ dependencies = [
     "pandas"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "httpx2"
+]
+
 [tool.setuptools.packages.find]
 include = ["app*"]
