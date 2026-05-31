@@ -8,4 +8,9 @@ def determinant(matrix: list[list[float]]) -> float:
     arr = validation.asarray(matrix)
     validation.validate_square(matrix)
 
-    return float(np.linalg.det(arr))
+    try: 
+        det = np.linalg.det(arr)
+    
+    except np.linalg.LinAlgError:
+        raise ValueError("Determinant computation did not converge")
+    return float(det)

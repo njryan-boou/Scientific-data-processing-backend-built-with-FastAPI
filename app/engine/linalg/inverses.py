@@ -7,10 +7,10 @@ def inverse(matrix: list[list[float]]) -> list[list[float]]:
     validation.validate_square(arr)
 
     try:
-        inv = np.linalg.inv(arr).tolist()
+        inv = np.linalg.inv(arr)
 
     except np.linalg.LinAlgError:
 
         raise exceptions.SingularMatrixError("Matrix is singular")
 
-    return inv
+    return inv.tolist()

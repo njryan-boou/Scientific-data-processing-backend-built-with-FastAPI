@@ -1,8 +1,21 @@
 from . import schemas
-from .schemas import MatrixRequest, DeterminantResponse
+from .schemas import (
+                    MatrixRequest, 
+                    DeterminantResponse,
+                    InverseResponse,
+                    TransposeResponse,
+                    EigValResponse,
+                    EigVectorResponse,
+                    TraceResponse,
+                    )
 
 __all__ = [
     "schemas",
     "MatrixRequest",
-    "DeterminantResponse"
+    "DeterminantResponse",
+    "InverseResponse",
+    "TransposeResponse",
+    "EigValResponse",
+    "EigVectorResponse",
+    "TraceResponse",
 ]

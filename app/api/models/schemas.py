@@ -1,9 +1,11 @@
 from pydantic import BaseModel, field_validator
 from app.engine.utils import validation
 
+from app.types import MatrixType
+
 class MatrixRequest(BaseModel):
 
-    matrix: list[list[float]]
+    matrix: MatrixType
 
     @field_validator("matrix")
     @classmethod
@@ -36,9 +38,21 @@ class DeterminantResponse(BaseModel):
     
 class InverseResponse(BaseModel):
 
-    inverse: list[list[float]]
+    inverse: MatrixType
     
     
 class TransposeResponse(BaseModel):
 
-    transpose: list[list[float]]
+    transpose: MatrixType
+    
+    
+class EigValResponse(BaseModel):
+    pass
+
+
+class EigVectorResponse(BaseModel):
+    pass
+
+
+class TraceResponse(BaseModel):
+    pass

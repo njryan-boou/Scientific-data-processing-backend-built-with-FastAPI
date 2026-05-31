@@ -1,19 +1,24 @@
 from . import determinants
-from . import eigen
+from . import eigens
 from . import inverses
-from . import transpose
+from . import transposes
+from . import traces
 from .determinants import determinant
 from .inverses import inverse
-from .transpose import transpose
-from .eigen import eigenvalues, eigenvectors
+from .transposes import transpose
+from .eigens import eigenvalues, eigenvectors
+from .traces import trace
 
 __all__ = [
     "determinants",
-    "eigen",
+    "eigens",
     "inverses",
     "determinant",
     "inverse",
-    "transpose",
+    "transposes",
     "eigenvalues",
-    "eigenvectors"
+    "eigenvectors",
+    "transpose",
+    "traces",
+    "trace",
 ]
