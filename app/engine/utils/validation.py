@@ -3,6 +3,7 @@ import numpy as np
 from app.engine.utils import exceptions
 
 def asarray(arr: list | np.ndarray) -> np.ndarray:
+    validate_empty_array(arr)
     return np.asarray(arr, dtype=np.float64)
 
 
@@ -14,7 +15,7 @@ def validate_square(arr: np.ndarray) -> np.ndarray:
     
 def validate_empty_array(value: float):
     if not value:
-        raise TypeError("Matrix cannot be empty")
+        raise ValueError("Array cannot be empty")
     
 
 def validate_empty_matrix_rows(value: float):

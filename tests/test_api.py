@@ -144,3 +144,85 @@ def test_matrix_validation_ragged_returns_422():
     )
 
     assert response.status_code == 422
+
+
+def test_stats_summary_endpoint_success():
+
+    response = client.post(
+        "/stats/summary",
+        json={
+            "data": [1, 2, 3, 4]
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["mean"] == pytest.approx(2.5)
+    assert payload["std"] == pytest.approx(float(np.std([1, 2, 3, 4])))
+    assert payload["minimum"] == 1.0
+    assert payload["maximum"] == 4.0
+
+
+def test_stats_mean_endpoint_success():
+
+    response = client.post(
+        "/mean",
+        json={
+            "data": [10, 20, 30]
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["mean"] == pytest.approx(20.0)
+
+
+def test_stats_std_endpoint_success():
+
+    data = [1, 2, 3, 4, 5]
+    response = client.post(
+        "/std",
+        json={
+            "data": data
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["std"] == pytest.approx(float(np.std(data)))
+
+
+def test_stats_max_endpoint_success():
+
+    response = client.post(
+        "/max",
+        json={
+            "data": [3, 9, 2, 7]
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["maximum"] == 9.0
+
+
+def test_stats_min_endpoint_success():
+
+    response = client.post(
+        "/mix",
+        json={
+            "data": [3, 9, 2, 7]
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["minimum"] == 2.0
+
+
+def test_stats_empty_data_validation_returns_422():
+
+    response = client.post(
+        "/mean",
+        json={
+            "data": []
+        },
+    )
+
+    assert response.status_code == 422
