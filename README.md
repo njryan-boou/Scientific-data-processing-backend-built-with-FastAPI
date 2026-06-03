@@ -188,3 +188,11 @@ Potential future modules include:
 * Advanced ODE solvers (RK4, adaptive methods)
 * Scientific visualization support
 * C++ accelerated computational backends
+
+## Live API
+
+<https://scientific-api-1ufm.onrender.com>
+
+## API Documentation
+
+<https://scientific-api-1ufm.onrender.com/docs>
