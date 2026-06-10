@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+scipy
 numpy
 pandas
 pydantic

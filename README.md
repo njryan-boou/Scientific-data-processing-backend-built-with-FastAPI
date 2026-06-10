@@ -11,6 +11,7 @@ A modular scientific computing backend built with FastAPI. The project separates
 * Matrix transpose
 * Matrix trace
 * Eigenvalue calculations
+* LU, QR, and SVD matrix decompositions
 
 ### Statistics
 
@@ -23,6 +24,7 @@ A modular scientific computing backend built with FastAPI. The project separates
 ### Ordinary Differential Equations
 
 * Euler method solver
+* Runge Kutta 4 solver
 
 ## Architecture
 
@@ -101,7 +103,7 @@ Windows:
 Install dependencies:
 
 ```bash
-pip install -r requires.txt
+pip install -r requirments.txt
 ```
 
 ## Running the API

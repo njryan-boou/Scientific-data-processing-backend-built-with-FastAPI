@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 
 from app.engine.utils import validation
 from app.types import Matrix, Vector
@@ -13,7 +13,7 @@ from .configs import (
 
 
 class MatrixRequest(BaseModel):
-    matrix: Matrix
+    matrix: Matrix = Field(description="Hi")
 
     model_config = matrix_config
 

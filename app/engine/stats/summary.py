@@ -10,4 +10,5 @@ def summary(data):
         "std": float(arr.std()),
         "minimum": float(arr.min()),
         "maximum": float(arr.max()),
+        "variance": float(arr.var())
     }

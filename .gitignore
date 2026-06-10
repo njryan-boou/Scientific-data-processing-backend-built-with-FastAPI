@@ -13,20 +13,11 @@ __pycache__/
 .pytest_cache/
 
 # VS Code
-.vscode/
-
-# JetBrains
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Coverage
-.coverage
-htmlcov/
+*.vscode/
 
 # Build artifacts
 build/
 dist/
-*.egg-info/
+scientific_api.egg-info/
+
+
