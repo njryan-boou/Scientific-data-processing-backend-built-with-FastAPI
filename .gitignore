@@ -11,13 +11,12 @@ __pycache__/
 
 # Pytest
 .pytest_cache/
-
-# VS Code
-*.vscode/
+.ruff_cache/
+.vscode/
 
 # Build artifacts
 build/
 dist/
-scientific_api.egg-info/
+*scientific_api.egg-info/
 
 
