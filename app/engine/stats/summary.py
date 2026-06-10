@@ -1,5 +1,3 @@
-import numpy as np
-
 from app.engine.utils import validation
 
 

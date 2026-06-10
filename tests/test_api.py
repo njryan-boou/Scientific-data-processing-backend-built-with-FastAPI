@@ -22,7 +22,7 @@ def test_health():
 def test_determinant_endpoint_success():
 
     response = client.post(
-        "/determinant",
+        "/linalg/determinant",
         json={
             "matrix": [[1, 2], [3, 4]]
         },
@@ -35,7 +35,7 @@ def test_determinant_endpoint_success():
 def test_determinant_endpoint_non_square_returns_400():
 
     response = client.post(
-        "/determinant",
+        "/linalg/determinant",
         json={
             "matrix": [[1, 2, 3], [4, 5, 6]]
         },
@@ -48,7 +48,7 @@ def test_determinant_endpoint_non_square_returns_400():
 def test_inverse_endpoint_success():
 
     response = client.post(
-        "/inverse",
+        "/linalg/inverse",
         json={
             "matrix": [[1, 2], [3, 4]]
         },
@@ -64,7 +64,7 @@ def test_inverse_endpoint_success():
 def test_inverse_endpoint_singular_returns_400():
 
     response = client.post(
-        "/inverse",
+        "/linalg/inverse",
         json={
             "matrix": [[1, 2], [2, 4]]
         },
@@ -77,7 +77,7 @@ def test_inverse_endpoint_singular_returns_400():
 def test_transpose_endpoint_success():
 
     response = client.post(
-        "/transpose",
+        "/linalg/transpose",
         json={
             "matrix": [[1, 2, 3], [4, 5, 6]]
         },
@@ -96,7 +96,7 @@ def test_transpose_endpoint_success():
 def test_eigenvalues_endpoint_success():
 
     response = client.post(
-        "/eigenvalues",
+        "/linalg/eigenvalues",
         json={
             "matrix": [[2, 0], [0, 3]]
         },
@@ -109,7 +109,7 @@ def test_eigenvalues_endpoint_success():
 def test_eigenvectors_endpoint_success_shape():
 
     response = client.post(
-        "/eigenvectors",
+        "/linalg/eigenvectors",
         json={
             "matrix": [[1, 0], [0, 1]]
         },
@@ -124,7 +124,7 @@ def test_eigenvectors_endpoint_success_shape():
 def test_trace_endpoint_success():
 
     response = client.post(
-        "/trace",
+        "/linalg/trace",
         json={
             "matrix": [[1, 2], [3, 4]]
         },
@@ -137,7 +137,7 @@ def test_trace_endpoint_success():
 def test_matrix_validation_ragged_returns_422():
 
     response = client.post(
-        "/determinant",
+        "/linalg/determinant",
         json={
             "matrix": [[1, 2], [3]]
         },
@@ -151,7 +151,7 @@ def test_stats_summary_endpoint_success():
     response = client.post(
         "/stats/summary",
         json={
-            "data": [1, 2, 3, 4]
+            "vector": [1, 2, 3, 4]
         },
     )
 
@@ -166,9 +166,9 @@ def test_stats_summary_endpoint_success():
 def test_stats_mean_endpoint_success():
 
     response = client.post(
-        "/mean",
+        "/stats/mean",
         json={
-            "data": [10, 20, 30]
+            "vector": [10, 20, 30]
         },
     )
 
@@ -180,9 +180,9 @@ def test_stats_std_endpoint_success():
 
     data = [1, 2, 3, 4, 5]
     response = client.post(
-        "/std",
+        "/stats/std",
         json={
-            "data": data
+            "vector": data
         },
     )
 
@@ -193,9 +193,9 @@ def test_stats_std_endpoint_success():
 def test_stats_max_endpoint_success():
 
     response = client.post(
-        "/max",
+        "/stats/max",
         json={
-            "data": [3, 9, 2, 7]
+            "vector": [3, 9, 2, 7]
         },
     )
 
@@ -206,9 +206,9 @@ def test_stats_max_endpoint_success():
 def test_stats_min_endpoint_success():
 
     response = client.post(
-        "/mix",
+        "/stats/min",
         json={
-            "data": [3, 9, 2, 7]
+            "vector": [3, 9, 2, 7]
         },
     )
 
@@ -219,10 +219,98 @@ def test_stats_min_endpoint_success():
 def test_stats_empty_data_validation_returns_422():
 
     response = client.post(
-        "/mean",
+        "/stats/mean",
         json={
-            "data": []
+            "vector": []
         },
     )
 
     assert response.status_code == 422
+
+
+def test_matrix_addition_endpoint_success():
+
+    response = client.post(
+        "/linalg/matrix-addition",
+        json={
+            "matrix_a": [[1, 2], [3, 4]],
+            "matrix_b": [[5, 6], [7, 8]],
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["result"] == [[6.0, 8.0], [10.0, 12.0]]
+
+
+def test_matrix_addition_shape_mismatch_returns_422():
+
+    response = client.post(
+        "/linalg/matrix-addition",
+        json={
+            "matrix_a": [[1, 2], [3, 4]],
+            "matrix_b": [[5, 6, 7], [8, 9, 10]],
+        },
+    )
+
+    assert response.status_code == 422
+
+
+def test_matrix_multiplication_incompatible_shapes_returns_422():
+
+    response = client.post(
+        "/linalg/matrix-multiplication",
+        json={
+            "matrix_a": [[1, 2, 3]],
+            "matrix_b": [[4, 5, 6]],
+        },
+    )
+
+    assert response.status_code == 422
+    details = response.json().get("detail", [])
+    messages = [item.get("msg", "") for item in details if isinstance(item, dict)]
+    assert any(
+        "columns in matrix a" in msg.lower() and "rows in matrix b" in msg.lower()
+        for msg in messages
+    )
+
+
+def test_scalar_multiply_endpoint_success():
+
+    response = client.post(
+        "/linalg/scalar-multiply",
+        json={
+            "matrix": [[1, 2], [3, 4]],
+            "scalar": 2,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["result"] == [[2.0, 4.0], [6.0, 8.0]]
+
+
+def test_scalar_divide_endpoint_success():
+
+    response = client.post(
+        "/linalg/scalar-divide",
+        json={
+            "matrix": [[2, 4], [6, 8]],
+            "scalar": 2,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["result"] == [[1.0, 2.0], [3.0, 4.0]]
+
+
+def test_scalar_divide_by_zero_returns_400():
+
+    response = client.post(
+        "/linalg/scalar-divide",
+        json={
+            "matrix": [[1, 2], [3, 4]],
+            "scalar": 0,
+        },
+    )
+
+    assert response.status_code == 400
+    assert "divide by zero" in response.json()["detail"].lower()

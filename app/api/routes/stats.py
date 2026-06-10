@@ -1,48 +1,66 @@
 from fastapi import APIRouter, HTTPException
 import logging
 
-from app.api.models import schemas
+import app.api.models as schemas
 
 from app.engine import stats
-
-from app.engine.utils import exceptions
-
-from app.types import Vector
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
-@router.post("/stats/summary", response_model=schemas.SummaryStatsResponse,
+@router.post("/summary", response_model=schemas.SummaryStatsResponse,
              summary="Compute summary statistics for a dataset",
-             description="Returns summary statistics for the input dataset, including mean, standard deviation, minimum, and maximum values.")
-def compute_summary(req: schemas.StatsRequest):
+             description="""
+Computes summary statistics for a dataset, including mean, standard deviation, minimum, and maximum values.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the summary statistics of the dataset.
+"""
+)
+def compute_summary(req: schemas.VectorRequest) -> dict[str, float]:
     logger.info("Computing Summary Statistics")
     
     try:
-        result = stats.summary(req.data)
+        result = stats.summary(req.vector)
         
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
+    except Exception:
+        logger.exception("Unexpected error while computing summary stats")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
     return result
 @router.post("/mean", response_model=schemas.MeanResponse,
              summary="Compute the mean of a dataset",
-             description="Returns the mean of the input dataset. The mean is the average value of the dataset.")
-def compute_mean(req: schemas.StatsRequest):
+             description="""
+Computes the mean of a dataset.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the mean of the dataset.
+"""
+)
+def compute_mean(req: schemas.VectorRequest) -> dict[str, float]:
     logger.info("Computing Mean")
     
     try:
-        result = stats.mean(req.data)
+        result = stats.mean(req.vector)
         
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
+    except Exception:
+        logger.exception("Unexpected error while computing mean")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
     return {
         "mean": result
@@ -51,18 +69,29 @@ def compute_mean(req: schemas.StatsRequest):
     
 @router.post("/std", response_model=schemas.StdResponse,
              summary="Compute the standard deviation of a dataset",
-             description="Returns the standard deviation of the input dataset. The standard deviation is a measure of the amount of variation or dispersion in a set of values.")
-def compute_standard_deviation(req: schemas.StatsRequest):
+             description="""
+Computes the standard deviation of a dataset.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the standard deviation of the dataset.
+"""
+)
+def compute_standard_deviation(req: schemas.VectorRequest) -> dict[str, float]:
     logger.info("Computing Standard Deviation")
     
     try:
-        result = stats.std(req.data)
+        result = stats.std(req.vector)
         
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
+    except Exception:
+        logger.exception("Unexpected error while computing standard deviation")
+        raise HTTPException(status_code=500, detail="Internal server error")
         
     return {
         "std": result
@@ -71,18 +100,29 @@ def compute_standard_deviation(req: schemas.StatsRequest):
     
 @router.post("/max", response_model=schemas.MaximumResponse,
              summary="Compute the maximum value of a dataset",
-             description="Returns the maximum value of the input dataset. The maximum is the largest value in the dataset.")
-def compute_maximum(req: schemas.StatsRequest):
+             description="""
+Computes the maximum value of a dataset.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the maximum value of the dataset.
+"""
+)
+def compute_maximum(req: schemas.VectorRequest) -> dict[str, float]:
     logger.info("Computing Maximum")
     
     try:
-        result = stats.maximum(req.data)
+        result = stats.maximum(req.vector)
         
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
+    except Exception:
+        logger.exception("Unexpected error while computing maximum")
+        raise HTTPException(status_code=500, detail="Internal server error")
         
     return {
         "maximum": result
@@ -91,18 +131,29 @@ def compute_maximum(req: schemas.StatsRequest):
     
 @router.post("/min", response_model=schemas.MinimumResponse,
              summary="Compute the minimum value of a dataset",
-             description="Returns the minimum value of the input dataset. The minimum is the smallest value in the dataset.")
-def compute_minimum(req: schemas.StatsRequest):
+             description="""
+Computes the minimum value of a dataset.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the minimum value of the dataset.
+"""
+)
+def compute_minimum(req: schemas.VectorRequest) -> dict[str, float]:
     logger.info("Computing Minimum")
     
     try:
-        result = stats.minimum(req.data)
+        result = stats.minimum(req.vector)
         
-    except Exception as e:
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
             detail=str(e),
         )
+    except Exception:
+        logger.exception("Unexpected error while computing minimum")
+        raise HTTPException(status_code=500, detail="Internal server error")
         
     return {
         "minimum": result

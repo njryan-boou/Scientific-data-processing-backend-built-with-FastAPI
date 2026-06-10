@@ -15,3 +15,4 @@ def determinant(matrix: Matrix) -> float:
     except np.linalg.LinAlgError:
         raise ValueError("Determinant computation did not converge")
     return float(det)
+

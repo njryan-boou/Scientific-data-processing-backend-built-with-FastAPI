@@ -16,7 +16,7 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest",
-    "httpx2"
+    "httpx"
 ]
 
 [tool.setuptools.packages.find]

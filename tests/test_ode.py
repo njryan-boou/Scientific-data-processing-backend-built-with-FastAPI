@@ -42,7 +42,7 @@ def test_euler_endpoint_success():
 		"steps": 3,
 	}
 
-	response = client.post("/euler", json=payload)
+	response = client.post("/ode/euler", json=payload)
 
 	assert response.status_code == 200
 	body = response.json()
@@ -53,7 +53,7 @@ def test_euler_endpoint_success():
 def test_euler_endpoint_non_positive_steps_returns_422():
 
 	response = client.post(
-		"/euler",
+		"/ode/euler",
 		json={
 			"y0": 1.0,
 			"t0": 0.0,
@@ -68,7 +68,7 @@ def test_euler_endpoint_non_positive_steps_returns_422():
 def test_euler_endpoint_non_positive_step_size_returns_422():
 
 	response = client.post(
-		"/euler",
+		"/ode/euler",
 		json={
 			"y0": 1.0,
 			"t0": 0.0,

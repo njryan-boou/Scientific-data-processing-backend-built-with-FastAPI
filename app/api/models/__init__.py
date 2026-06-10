@@ -1,39 +1,53 @@
-from . import schemas
-from .schemas import (
-                    MatrixRequest, 
-                    StatsRequest,
-                    EulerRequest,
-                    
-                    DeterminantResponse,
-                    InverseResponse,
-                    TransposeResponse,
-                    EigValResponse,
-                    EigVectorResponse,
-                    TraceResponse,
-                    
-                    MeanResponse,
-                    StdResponse,
-                    MinimumResponse,
-                    MaximumResponse,
-                    SummaryStatsResponse,
-                    EulerResponse,
-                    )
+from .requests import (
+    EulerRequest,
+    MatrixRequest,
+    ScalarMatrixRequest,
+    TwoMatrixRequest,
+    TwoMatrixSameShapeRequest,
+    VectorRequest,
+)
+from .responses import (
+    DeterminantResponse,
+    EigValResponse,
+    EigVectorResponse,
+    EulerResponse,
+    RungeKuttaResponse,
+    InverseResponse,
+    MatrixResponse,
+    MaximumResponse,
+    MeanResponse,
+    MinimumResponse,
+    StdResponse,
+    SummaryStatsResponse,
+    TraceResponse,
+    TransposeResponse,
+    LUResponse,
+    QRResponse,
+    SVDResponse
+)
 
 __all__ = [
-    "schemas",
     "MatrixRequest",
-    "StatsRequest",
-    "DeterminantResponse",
-    "InverseResponse",
-    "TransposeResponse",
+    "VectorRequest",
     "EigValResponse",
     "EigVectorResponse",
+    "SummaryStatsResponse",
+    "EulerResponse",
+    "RungeKuttaResponse",
+    "EulerRequest",
+    "TwoMatrixRequest",
+    "TwoMatrixSameShapeRequest",
+    "ScalarMatrixRequest",
+    "MatrixResponse",
+    "InverseResponse",
+    "TransposeResponse",
+    "DeterminantResponse",
     "TraceResponse",
     "MeanResponse",
     "StdResponse",
     "MinimumResponse",
     "MaximumResponse",
-    "SummaryStatsResponse",
-    "EulerResponse",
-    "EulerRequest"
+    "LUResponse",
+    "QRResponse",
+    "SVDResponse"
 ]

@@ -1,4 +1,3 @@
-from . import summary
 from . import stds
 from . import means
 from . import maxs
