@@ -1,5 +1,5 @@
-from sqlalchemy import Integer, String, Text, DateTime, Column
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Integer, String, Text, DateTime, Column, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
 from .database import Base
@@ -24,6 +24,12 @@ class Note(Base):
         nullable=False
     )
 
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow
@@ -34,6 +40,8 @@ class Note(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
+
+    owner = relationship("User", back_populates="notes")
     
     
 class User(Base):
@@ -47,3 +55,5 @@ class User(Base):
     password_hash = Column(String(128), nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    notes = relationship("Note", back_populates="owner")

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Login</h1>
+
+    <input
+        id="username"
+        placeholder="Username"
+    >
+
+    <input
+        id="email"
+        type="email"
+        placeholder="Email for new accounts"
+    >
+
+    <input
+        id="password"
+        type="password"
+        placeholder="Password"
+    >
+
+    <div class="button-row">
+        <button onclick="login()">
+            Login
+        </button>
+
+        <button onclick="register()">
+            Register
+        </button>
+    </div>
+
+    <p id="message"></p>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>

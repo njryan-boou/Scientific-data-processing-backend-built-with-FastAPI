@@ -373,3 +373,132 @@ def test_register_does_not_return_password_hash():
     payload = response.json()
     assert payload["username"] == username
     assert "password_hash" not in payload
+
+
+def register_and_login_user():
+    username = f"user-{uuid4()}"
+    password = "valid-password"
+
+    register_response = client.post(
+        "/auth/register",
+        json={
+            "username": username,
+            "email": f"{uuid4()}@example.com",
+            "password": password,
+        },
+    )
+    assert register_response.status_code == 200
+
+    login_response = client.post(
+        "/auth/login",
+        json={
+            "username": username,
+            "password": password,
+        },
+    )
+    assert login_response.status_code == 200
+
+    token = login_response.json()["access_token"]
+    return {
+        "Authorization": f"Bearer {token}"
+    }
+
+
+def test_notes_require_authentication():
+    response = client.get("/notes/")
+
+    assert response.status_code == 401
+
+
+def test_notes_are_scoped_to_current_user():
+    first_user_headers = register_and_login_user()
+    second_user_headers = register_and_login_user()
+
+    first_note_response = client.post(
+        "/notes/",
+        headers=first_user_headers,
+        json={
+            "title": "First user's note",
+            "content": "Visible only to the first user",
+        },
+    )
+    assert first_note_response.status_code == 200
+    first_note_id = first_note_response.json()["id"]
+
+    second_note_response = client.post(
+        "/notes/",
+        headers=second_user_headers,
+        json={
+            "title": "Second user's note",
+            "content": "Visible only to the second user",
+        },
+    )
+    assert second_note_response.status_code == 200
+
+    first_user_notes = client.get(
+        "/notes/",
+        headers=first_user_headers,
+    )
+    assert first_user_notes.status_code == 200
+    first_user_titles = {
+        note["title"]
+        for note in first_user_notes.json()
+    }
+    assert "First user's note" in first_user_titles
+    assert "Second user's note" not in first_user_titles
+
+    second_user_notes = client.get(
+        "/notes/",
+        headers=second_user_headers,
+    )
+    assert second_user_notes.status_code == 200
+    second_user_titles = {
+        note["title"]
+        for note in second_user_notes.json()
+    }
+    assert "Second user's note" in second_user_titles
+    assert "First user's note" not in second_user_titles
+
+    forbidden_delete = client.delete(
+        f"/notes/{first_note_id}",
+        headers=second_user_headers,
+    )
+    assert forbidden_delete.status_code == 404
+
+
+def test_user_cannot_read_or_update_another_users_note():
+    owner_headers = register_and_login_user()
+    other_user_headers = register_and_login_user()
+
+    create_response = client.post(
+        "/notes/",
+        headers=owner_headers,
+        json={
+            "title": "Private note",
+            "content": "Only the owner can read or update this",
+        },
+    )
+    assert create_response.status_code == 200
+    note_id = create_response.json()["id"]
+
+    read_response = client.get(
+        f"/notes/{note_id}",
+        headers=other_user_headers,
+    )
+    assert read_response.status_code == 404
+
+    update_response = client.put(
+        f"/notes/{note_id}",
+        headers=other_user_headers,
+        json={
+            "title": "Changed by another user",
+        },
+    )
+    assert update_response.status_code == 404
+
+    owner_read_response = client.get(
+        f"/notes/{note_id}",
+        headers=owner_headers,
+    )
+    assert owner_read_response.status_code == 200
+    assert owner_read_response.json()["title"] == "Private note"

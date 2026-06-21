@@ -4,11 +4,12 @@ from .models import Note
 from .schemas import NoteCreate, NoteUpdate
 
 
-def create_note(db: Session, note: NoteCreate):
+def create_note(db: Session, note: NoteCreate, user_id: int):
 
     db_note = Note(
         title=note.title,
-        content=note.content
+        content=note.content,
+        user_id=user_id
     )
 
     db.add(db_note)
@@ -18,27 +19,35 @@ def create_note(db: Session, note: NoteCreate):
     return db_note
 
 
-def get_note(db: Session, note_id: int):
+def get_note(db: Session, note_id: int, user_id: int):
 
     return (
         db.query(Note)
-        .filter(Note.id == note_id)
+        .filter(
+            Note.id == note_id,
+            Note.user_id == user_id
+        )
         .first()
     )
 
 
-def get_notes(db: Session):
+def get_notes(db: Session, user_id: int):
 
-    return db.query(Note).all()
+    return (
+        db.query(Note)
+        .filter(Note.user_id == user_id)
+        .all()
+    )
 
 
 def update_note(
     db: Session,
     note_id: int,
-    update: NoteUpdate
+    update: NoteUpdate,
+    user_id: int
 ):
 
-    note = get_note(db, note_id)
+    note = get_note(db, note_id, user_id)
 
     if not note:
         return None
@@ -57,10 +66,11 @@ def update_note(
 
 def delete_note(
     db: Session,
-    note_id: int
+    note_id: int,
+    user_id: int
 ):
 
-    note = get_note(db, note_id)
+    note = get_note(db, note_id, user_id)
 
     if not note:
         return False

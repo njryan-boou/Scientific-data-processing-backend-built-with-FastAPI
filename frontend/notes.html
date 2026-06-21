@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Notes</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>My Notes</h1>
+
+    <button onclick="logout()">
+        Logout
+    </button>
+
+    <hr>
+
+    <input
+        id="title"
+        placeholder="Title"
+    >
+
+    <textarea
+        id="content"
+        placeholder="Write a note..."
+    ></textarea>
+
+    <button onclick="createNote()">
+        Create Note
+    </button>
+
+    <hr>
+
+    <div id="notes"></div>
+
+</div>
+
+<script src="js/notes.js"></script>
+
+</body>
+</html>

@@ -1,138 +1,195 @@
 # Scientific Computing API
 
-A modular scientific computing backend built with FastAPI. The project separates numerical computation from the API layer, allowing the computation engine to be used independently or exposed through HTTP endpoints.
+A modular scientific computing backend built with FastAPI. The project separates numerical computation from the API layer, while also including a small browser frontend for authenticated research notes.
 
 ## Features
 
-### Linear Algebra
+### Scientific API
 
-* Matrix determinant
-* Matrix inverse
-* Matrix transpose
-* Matrix trace
-* Eigenvalue calculations
-* LU, QR, and SVD matrix decompositions
+* Linear algebra endpoints for determinants, inverses, transposes, traces, eigenvalues, eigenvectors, and matrix arithmetic
+* Statistics endpoints for mean, standard deviation, variance, minimum, maximum, and summaries
+* Ordinary differential equation endpoints for Euler and Runge-Kutta 4 methods
+* Request validation with Pydantic response models
+* OpenAPI documentation through FastAPI
 
-### Statistics
+### Authenticated Notes
 
-* Mean
-* Standard deviation
-* Variance
-* Minimum and maximum values
-* Statistical summaries
-
-### Ordinary Differential Equations
-
-* Euler method solver
-* Runge Kutta 4 solver
-
-## Architecture
-
-The project is organized into two primary layers:
-
-```text
-API Layer
-    ↓
-Computation Engine
-```
-
-### Engine
-
-The engine contains all numerical and scientific computation logic.
-
-```python
-from app.engine.linalg import determinant
-from app.engine.stats import summary
-from app.engine.ode import euler
-```
-
-### API
-
-The API layer exposes engine functionality through FastAPI endpoints.
-
-Features include:
-
-* Request validation using Pydantic
-* Response models
-* Custom exception handling
-* Structured logging
-* OpenAPI/Swagger documentation
+* User registration and login
+* JWT bearer token authentication
+* User-specific notes
+* Create, list, read, update, and delete note endpoints
+* Browser frontend for login, registration, and note management
 
 ## Project Structure
 
 ```text
 app/
-│
-├── api/
-│   ├── models/
-│   └── routes/
-│
-├── engine/
-│   ├── linalg/
-│   ├── stats/
-│   └── ode/
-│
-├── utils/
-├── tests/
-└── logging_config.py
+|-- api/
+|   |-- routes/
+|   |-- services/
+|   `-- main.py
+|-- db/
+|   |-- crud.py
+|   |-- database.py
+|   |-- models.py
+|   `-- schemas.py
+`-- engine/
+    |-- linalg/
+    |-- ode/
+    `-- stats/
+
+frontend/
+|-- css/
+|-- js/
+|-- index.html
+|-- login.html
+`-- notes.html
+
+tests/
 ```
 
 ## Installation
 
-Clone the repository:
+Create and activate a virtual environment:
 
-```bash
-git clone <git@github.com:your-username/scientific-api.git>
-cd <Scientific-data-processing-backend-built-with-FastAPI>
-```
-
-Create a virtual environment:
-
-```bash
+```powershell
 python -m venv .venv
-```
-
-Activate the environment:
-
-Windows:
-
-```bash
-.venv\Scripts\activate
+.\.venv\Scripts\activate
 ```
 
 Install dependencies:
 
-```bash
+```powershell
 pip install -r requirments.txt
 ```
 
+The dependency file is currently named `requirments.txt`.
+
 ## Running the API
 
-Start the development server:
+Start the FastAPI server:
 
-```bash
-uvicorn app.api.main:app --reload
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn app.api.main:app --reload --port 8001
 ```
 
-API documentation will be available at:
+API documentation is available at:
 
 ```text
-http://127.0.0.1:8000/docs
+http://127.0.0.1:8001/docs
 ```
 
-## Running Tests
+Health check:
 
-Execute the test suite:
-
-```bash
-pytest
+```text
+http://127.0.0.1:8001/health
 ```
 
-## Example Requests
+## Running the Frontend
 
-### Determinant
+Start a static file server from the `frontend` directory:
 
-Request:
+```powershell
+cd frontend
+..\.venv\Scripts\python.exe -m http.server 5500 --bind 127.0.0.1
+```
+
+Or from the project root:
+
+```powershell
+.\.venv\Scripts\python.exe -m http.server 5500 --bind 127.0.0.1 --directory frontend
+```
+
+Open the frontend:
+
+```text
+http://127.0.0.1:5500/login.html
+```
+
+Register a user, log in, and then create notes. Notes are scoped to the logged-in user, so one user cannot see or modify another user's notes.
+
+## Authentication Flow
+
+Register:
+
+```http
+POST /auth/register
+```
+
+```json
+{
+    "username": "alice",
+    "email": "alice@example.com",
+    "password": "valid-password"
+}
+```
+
+Log in:
+
+```http
+POST /auth/login
+```
+
+```json
+{
+    "username": "alice",
+    "password": "valid-password"
+}
+```
+
+The login response includes an access token:
+
+```json
+{
+    "access_token": "<jwt>",
+    "token_type": "bearer"
+}
+```
+
+Use that token with note endpoints:
+
+```http
+Authorization: Bearer <jwt>
+```
+
+## Notes API
+
+Create a note:
+
+```http
+POST /notes/
+```
+
+```json
+{
+    "title": "Experiment notes",
+    "content": "Initial observations..."
+}
+```
+
+List the current user's notes:
+
+```http
+GET /notes/
+```
+
+Get, update, or delete one of the current user's notes:
+
+```http
+GET /notes/{note_id}
+PUT /notes/{note_id}
+DELETE /notes/{note_id}
+```
+
+Requests without a bearer token return `401`. Requests for another user's note return `404`.
+
+## Scientific API Examples
+
+Determinant:
+
+```http
+POST /linalg/determinant
+```
 
 ```json
 {
@@ -143,53 +200,68 @@ Request:
 }
 ```
 
-Response:
+Statistics summary:
+
+```http
+POST /stats/summary
+```
 
 ```json
 {
-    "determinant": -2.0
+    "vector": [1, 2, 3, 4, 5]
 }
 ```
 
-### Statistics Summary
+Euler method:
 
-Request:
+```http
+POST /ode/euler
+```
 
 ```json
 {
-    "data": [1, 2, 3, 4, 5]
+    "y0": 1.0,
+    "t0": 0.0,
+    "step_size": 0.5,
+    "steps": 3
 }
 ```
 
-Response:
+## Running Tests
 
-```json
-{
-    "mean": 3.0,
-    "std": 1.4142,
-    "minimum": 1.0,
-    "maximum": 5.0
-}
+Run the full test suite:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
 ```
+
+The tests cover:
+
+* Scientific endpoint success and validation paths
+* Authentication validation
+* Password length handling for bcrypt
+* User-specific note access
+* Cross-user note isolation for list, read, update, and delete operations
+
+## Database
+
+By default, the app uses SQLite at:
+
+```text
+notes.db
+```
+
+You can override the database by setting `DATABASE_URL`.
+
+For local SQLite databases, startup includes a compatibility check that adds the `notes.user_id` column when needed. Existing notes without an owner are not returned to any user.
 
 ## Design Goals
 
-* Separation of concerns between API and computation layers
-* Reusable scientific computation engine
-* Strong validation and error handling
-* Automated testing
-* Extensible module-based architecture
-
-## Future Development
-
-Potential future modules include:
-
-* Numerical integration
-* Optimization algorithms
-* Regression and statistical modeling
-* Advanced ODE solvers (RK4, adaptive methods)
-* Scientific visualization support
-* C++ accelerated computational backends
+* Keep computation logic reusable outside the API layer
+* Use typed request and response models
+* Enforce authentication and note ownership in the backend
+* Keep the frontend simple enough to run without a build step
+* Maintain automated tests for API behavior and access control
 
 ## Live API
 
