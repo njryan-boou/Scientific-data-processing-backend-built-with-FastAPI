@@ -96,6 +96,37 @@ def compute_standard_deviation(req: schemas.VectorRequest) -> dict[str, float]:
     return {
         "std": result
     }
+
+
+@router.post("/variance", response_model=schemas.VarianceResponse,
+             summary="Compute the variance of a dataset",
+             description="""
+Computes the variance of a dataset.
+
+Requirements:
+- Dataset must be provided.
+
+Returns the variance of the dataset.
+"""
+)
+def compute_variance(req: schemas.VectorRequest) -> dict[str, float]:
+    logger.info("Computing Variance")
+
+    try:
+        result = stats.variance(req.vector)
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        )
+    except Exception:
+        logger.exception("Unexpected error while computing variance")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+    return {
+        "variance": result
+    }
     
     
 @router.post("/max", response_model=schemas.MaximumResponse,
@@ -158,3 +189,5 @@ def compute_minimum(req: schemas.VectorRequest) -> dict[str, float]:
     return {
         "minimum": result
     }
+    
+    

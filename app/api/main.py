@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 
-from app.api.routes import linalg, stats, ode
-import app.logging_config  # noqa: F401
+from app.db.database import Base, engine
+from app.api.routes import auth, linalg, stats, ode, notes
+import app.logging_config
+
+Base.metadata.create_all(bind=engine)
 
 tags_metadata = [
     {
@@ -43,7 +46,8 @@ Built with FastAPI and NumPy.
 app.include_router(linalg.router, prefix="/linalg", tags=["Linear Algebra"])
 app.include_router(stats.router, prefix="/stats", tags=["Statistics"])
 app.include_router(ode.router, prefix="/ode", tags=["Ordinary Differential Equations"])
-
+app.include_router(notes.router, prefix="/notes", tags=["Notes"])
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 @app.get("/health")
 def health():
@@ -51,3 +55,4 @@ def health():
     return {
         "status": "running"
     }
+    

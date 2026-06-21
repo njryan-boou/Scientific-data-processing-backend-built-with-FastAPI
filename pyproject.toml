@@ -11,7 +11,12 @@ dependencies = [
     "uvicorn",
     "numpy",
     "pandas",
-    "scipy"
+    "scipy",
+    "pydantic",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "bcrypt",
+    "python-jose"
 ]
 
 [project.optional-dependencies]

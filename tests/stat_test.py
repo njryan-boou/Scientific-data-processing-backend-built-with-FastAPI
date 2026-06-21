@@ -18,6 +18,13 @@ def test_std_basic():
 	assert stats.std(data) == pytest.approx(float(np.std(data)))
 
 
+def test_variance_basic():
+
+	data = [1, 2, 3, 4, 5]
+
+	assert stats.variance(data) == pytest.approx(float(np.var(data)))
+
+
 def test_minimum_basic():
 
 	data = [8, -2, 10, 1]

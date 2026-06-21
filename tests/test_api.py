@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 import numpy as np
 import pytest
+from uuid import uuid4
 
 from app.api.main import app
 
@@ -190,6 +191,20 @@ def test_stats_std_endpoint_success():
     assert response.json()["std"] == pytest.approx(float(np.std(data)))
 
 
+def test_stats_variance_endpoint_success():
+
+    data = [1, 2, 3, 4, 5]
+    response = client.post(
+        "/stats/variance",
+        json={
+            "vector": data
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["variance"] == pytest.approx(float(np.var(data)))
+
+
 def test_stats_max_endpoint_success():
 
     response = client.post(
@@ -314,3 +329,47 @@ def test_scalar_divide_by_zero_returns_400():
 
     assert response.status_code == 400
     assert "divide by zero" in response.json()["detail"].lower()
+
+
+def test_register_rejects_password_longer_than_bcrypt_limit():
+    response = client.post(
+        "/auth/register",
+        json={
+            "username": f"user-{uuid4()}",
+            "email": f"{uuid4()}@example.com",
+            "password": "a" * 73,
+        },
+    )
+
+    assert response.status_code == 422
+    assert "72 bytes" in str(response.json()["detail"])
+
+
+def test_login_rejects_password_longer_than_bcrypt_limit():
+    response = client.post(
+        "/auth/login",
+        json={
+            "username": "missing",
+            "password": "a" * 73,
+        },
+    )
+
+    assert response.status_code == 422
+    assert "72 bytes" in str(response.json()["detail"])
+
+
+def test_register_does_not_return_password_hash():
+    username = f"user-{uuid4()}"
+    response = client.post(
+        "/auth/register",
+        json={
+            "username": username,
+            "email": f"{uuid4()}@example.com",
+            "password": "valid-password",
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["username"] == username
+    assert "password_hash" not in payload

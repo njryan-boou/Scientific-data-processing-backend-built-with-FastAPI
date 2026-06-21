@@ -56,6 +56,10 @@ class StdResponse(BaseModel):
     std: float
 
 
+class VarianceResponse(BaseModel):
+    variance: float
+
+
 class MinimumResponse(BaseModel):
     minimum: float
 

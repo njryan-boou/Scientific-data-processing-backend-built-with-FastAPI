@@ -6,3 +6,5 @@ pandas
 pydantic
 sqlalchemy
 psycopg2-binary
+bcrypt
+python-jose
