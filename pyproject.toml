@@ -16,7 +16,8 @@ dependencies = [
     "sqlalchemy",
     "psycopg2-binary",
     "bcrypt",
-    "python-jose"
+    "python-jose",
+    "pybind11"
 ]
 
 [project.optional-dependencies]
@@ -27,3 +28,6 @@ test = [
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+
+[tool.vercel]
+entrypoint = "app.api.main:app"

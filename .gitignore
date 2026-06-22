@@ -8,7 +8,18 @@ __pycache__/
 *.db
 scientific_api.egg-info/
 
-
-# c++
-*cpp/
 .env.example
+
+# Local toolchains
+.tools/
+
+# C++ / CMake
+cpp_math/build/
+cpp_math/build-gcc/
+cpp_math/build-pybind/
+cpp_math/**/*.exe
+cpp_math/**/*.pyd
+cpp_math/**/*.dll
+cpp_math/**/*.lib
+cpp_math/**/*.obj
+cpp_math/**/*.pdb

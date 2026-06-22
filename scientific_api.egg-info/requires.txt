@@ -2,5 +2,14 @@ fastapi
 uvicorn
 numpy
 pandas
-pydantic
 scipy
+pydantic
+sqlalchemy
+psycopg2-binary
+bcrypt
+python-jose
+pybind11
+
+[test]
+pytest
+httpx

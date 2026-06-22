@@ -5,3 +5,13 @@ Requires-Dist: fastapi
 Requires-Dist: uvicorn
 Requires-Dist: numpy
 Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: pydantic
+Requires-Dist: sqlalchemy
+Requires-Dist: psycopg2-binary
+Requires-Dist: bcrypt
+Requires-Dist: python-jose
+Requires-Dist: pybind11
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: httpx; extra == "test"
