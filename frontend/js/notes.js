@@ -1,6 +1,11 @@
 const API_BASE_URL = "http://127.0.0.1:8001";
 
-window.onload = loadNotes;
+window.onload = initializeNotesPage;
+
+async function initializeNotesPage() {
+    await loadCurrentUser();
+    await loadNotes();
+}
 
 async function apiFetch(path, options = {}) {
     const token = localStorage.getItem("token");
@@ -28,6 +33,21 @@ async function apiFetch(path, options = {}) {
     }
 
     return response;
+}
+
+async function loadCurrentUser() {
+    const response = await apiFetch("/auth/me");
+
+    if (!response || !response.ok) {
+        return;
+    }
+
+    const user = await response.json();
+    const adminLink = document.getElementById("admin-link");
+
+    if (adminLink && user.is_admin) {
+        adminLink.classList.remove("hidden");
+    }
 }
 
 async function loadNotes() {

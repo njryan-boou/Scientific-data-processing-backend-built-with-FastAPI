@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Notes</title>
+    <title>Admin Users</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,18 +12,18 @@
         <div class="site-nav-links">
             <a href="index.html">Home</a>
             <a href="login.html">Login</a>
-            <a class="active" href="notes.html">Notes</a>
+            <a href="notes.html">Notes</a>
             <a href="linalg_api.html">Linalg</a>
             <a href="stats_api.html">Stats</a>
             <a href="ode_api.html">ODE</a>
-            <a id="admin-link" class="hidden" href="admin.html">Admin</a>
+            <a class="active" href="admin.html">Admin</a>
         </div>
     </div>
 </nav>
 
 <div class="container">
 
-    <h1>My Notes</h1>
+    <h1>Admin Users</h1>
 
     <div class="button-row">
         <button onclick="logout()">
@@ -31,29 +31,27 @@
         </button>
     </div>
 
-    <hr>
+    <p id="message"></p>
 
-    <input
-        id="title"
-        placeholder="Title"
-    >
-
-    <textarea
-        id="content"
-        placeholder="Write a note..."
-    ></textarea>
-
-    <button onclick="createNote()">
-        Create Note
-    </button>
-
-    <hr>
-
-    <div id="notes"></div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users"></tbody>
+        </table>
+    </div>
 
 </div>
 
-<script src="js/notes.js"></script>
+<script src="js/admin.js"></script>
 
 </body>
 </html>

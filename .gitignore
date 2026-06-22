@@ -3,9 +3,12 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .vscode/
+.env
+.env.*
 *.db
 scientific_api.egg-info/
 
 
 # c++
 *cpp/
+.env.example

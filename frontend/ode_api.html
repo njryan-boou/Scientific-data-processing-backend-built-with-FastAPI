@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODE API</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ode_api.css">
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="site-nav-inner">
+        <div class="site-nav-title">Scientific API</div>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="notes.html">Notes</a>
+            <a href="linalg_api.html">Linalg</a>
+            <a href="stats_api.html">Stats</a>
+            <a class="active" href="ode_api.html">ODE</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="tool-header">
+        <div>
+            <h1>ODE API</h1>
+            <p class="muted">Run numerical ODE solvers against the FastAPI backend.</p>
+        </div>
+
+        <div class="button-row">
+            <button onclick="loadExample()">Example</button>
+            <button onclick="clearForm()">Clear</button>
+        </div>
+    </div>
+
+    <div class="grid">
+        <section class="panel">
+            <h2>Method</h2>
+
+            <div id="operations" class="operation-list"></div>
+        </section>
+
+        <section class="panel">
+            <h2>Initial Value Problem</h2>
+
+            <div class="input-grid">
+                <label for="y0">Initial value y0</label>
+                <input id="y0" type="number" value="1" step="any">
+
+                <label for="t0">Initial time t0</label>
+                <input id="t0" type="number" value="0" step="any">
+
+                <label for="step-size">Step size</label>
+                <input id="step-size" type="number" value="0.5" step="any">
+
+                <label for="steps">Steps</label>
+                <input id="steps" type="number" value="5" min="1" step="1">
+            </div>
+        </section>
+    </div>
+
+    <div class="button-row run-row">
+        <button onclick="runOperation()">Run Solver</button>
+    </div>
+
+    <p id="status"></p>
+
+    <section class="panel">
+        <h2>Result</h2>
+        <pre id="result" class="output">Choose a method and run it.</pre>
+    </section>
+</div>
+
+<script src="js/ode_api.js"></script>
+
+</body>
+</html>

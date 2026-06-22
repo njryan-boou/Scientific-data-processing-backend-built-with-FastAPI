@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.api.services.security import create_access_token, hash_password, verify_password
+from app.api.services.security import (
+    create_access_token,
+    get_current_user,
+    hash_password,
+    verify_password
+)
 from app.db import models, schemas
 from app.db.database import get_db
 
@@ -23,11 +28,14 @@ def register(
             status_code=400,
             detail="Username or email already exists")
         
+    is_first_user = db.query(models.User).count() == 0
+
     # Create new user
     new_user = models.User(
         username=user.username,
         email=user.email,
-        password_hash=hash_password(user.password)
+        password_hash=hash_password(user.password),
+        is_admin=is_first_user
     )
     
     db.add(new_user)
@@ -57,5 +65,13 @@ def login(
     
     return {
         "access_token": access_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "is_admin": user.is_admin
     }
+
+
+@router.get("/me", response_model=schemas.UserResponse)
+def get_me(
+    current_user: models.User = Depends(get_current_user)
+):
+    return current_user

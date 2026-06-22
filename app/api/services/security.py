@@ -5,11 +5,10 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db import models
 from app.db.database import get_db
 
-SECRET_KEY = "your_secret_key_here"
-ALGORITHM = "HS256"
 MAX_BCRYPT_PASSWORD_BYTES = 72
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
@@ -29,10 +28,16 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(data: dict):
     payload = data.copy()
-    expire = datetime.utcnow() + timedelta(hours=24)
+    expire = datetime.utcnow() + timedelta(
+        hours=settings.access_token_expire_hours
+    )
     
     payload["exp"] = expire
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(
+        payload,
+        settings.jwt_secret_key,
+        algorithm=settings.jwt_algorithm
+    )
 
 
 def get_current_user(
@@ -46,7 +51,11 @@ def get_current_user(
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            token,
+            settings.jwt_secret_key,
+            algorithms=[settings.jwt_algorithm]
+        )
         username = payload.get("sub")
     except JWTError:
         raise credentials_error
@@ -64,3 +73,15 @@ def get_current_user(
         raise credentials_error
 
     return user
+
+
+def require_admin_user(
+    current_user: models.User = Depends(get_current_user)
+):
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=403,
+            detail="Admin access required"
+        )
+
+    return current_user

@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect, text
 
+from app.config import settings
 from app.db.database import Base, engine
-from app.api.routes import auth, linalg, stats, ode, notes
+from app.api.routes import admin, auth, linalg, stats, ode, notes
 import app.logging_config
 
 Base.metadata.create_all(bind=engine)
@@ -28,7 +29,27 @@ def ensure_sqlite_note_owner_column():
         )
 
 
+def ensure_sqlite_user_admin_column():
+    if not engine.url.drivername.startswith("sqlite"):
+        return
+
+    inspector = inspect(engine)
+    columns = {
+        column["name"]
+        for column in inspector.get_columns("users")
+    }
+
+    if "is_admin" in columns:
+        return
+
+    with engine.begin() as connection:
+        connection.execute(
+            text("ALTER TABLE users ADD COLUMN is_admin BOOLEAN NOT NULL DEFAULT 0")
+        )
+
+
 ensure_sqlite_note_owner_column()
+ensure_sqlite_user_admin_column()
 
 tags_metadata = [
     {
@@ -56,7 +77,7 @@ Features:
 - Statistics
 - Differential Equations
 
-Built with FastAPI and NumPy.
+Built with FastAPI and C++.
 """,
 
     openapi_tags=tags_metadata,
@@ -68,13 +89,7 @@ Built with FastAPI and NumPy.
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
-        "null",
-    ],
+    allow_origins=list(settings.cors_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -85,6 +100,7 @@ app.include_router(stats.router, prefix="/stats", tags=["Statistics"])
 app.include_router(ode.router, prefix="/ode", tags=["Ordinary Differential Equations"])
 app.include_router(notes.router, prefix="/notes", tags=["Notes"])
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 @app.get("/health")
 def health():
@@ -92,4 +108,3 @@ def health():
     return {
         "status": "running"
     }
-    

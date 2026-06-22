@@ -19,6 +19,7 @@ A modular scientific computing backend built with FastAPI. The project separates
 * User-specific notes
 * Create, list, read, update, and delete note endpoints
 * Browser frontend for login, registration, and note management
+* Admin panel for managing users
 
 ## Project Structure
 
@@ -43,6 +44,7 @@ frontend/
 |-- js/
 |-- index.html
 |-- login.html
+|-- admin.html
 `-- notes.html
 
 tests/
@@ -60,10 +62,16 @@ python -m venv .venv
 Install dependencies:
 
 ```powershell
-pip install -r requirments.txt
+pip install -r requirements.txt
 ```
 
-The dependency file is currently named `requirments.txt`.
+Create a local environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Then edit `.env` and replace `JWT_SECRET_KEY` with a long random value.
 
 ## Running the API
 
@@ -107,6 +115,8 @@ http://127.0.0.1:5500/login.html
 ```
 
 Register a user, log in, and then create notes. Notes are scoped to the logged-in user, so one user cannot see or modify another user's notes.
+
+The first registered user is created as an admin. Admin users see an `Admin` button on the notes page.
 
 ## Authentication Flow
 
@@ -183,6 +193,38 @@ DELETE /notes/{note_id}
 
 Requests without a bearer token return `401`. Requests for another user's note return `404`.
 
+## Admin Users API
+
+Admin endpoints require a bearer token for a user with `is_admin=true`.
+
+List users:
+
+```http
+GET /admin/users
+```
+
+Update a user:
+
+```http
+PUT /admin/users/{user_id}
+```
+
+```json
+{
+    "username": "new-username",
+    "email": "new-email@example.com",
+    "is_admin": true
+}
+```
+
+Delete a user and that user's notes:
+
+```http
+DELETE /admin/users/{user_id}
+```
+
+Admins cannot delete their own account or remove their own admin access.
+
 ## Scientific API Examples
 
 Determinant:
@@ -242,6 +284,7 @@ The tests cover:
 * Password length handling for bcrypt
 * User-specific note access
 * Cross-user note isolation for list, read, update, and delete operations
+* Admin-only user management
 
 ## Database
 

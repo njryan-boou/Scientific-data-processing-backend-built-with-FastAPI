@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Text, DateTime, Column, ForeignKey
+from sqlalchemy import Boolean, Integer, String, Text, DateTime, Column, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
@@ -53,7 +53,8 @@ class User(Base):
     email = Column(String(100), unique=True, nullable=False)
     
     password_hash = Column(String(128), nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False)
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    notes = relationship("Note", back_populates="owner")
+    notes = relationship("Note", back_populates="owner", cascade="all, delete-orphan")

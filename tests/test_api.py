@@ -1,12 +1,28 @@
+import os
 from fastapi.testclient import TestClient
+from jose import jwt
 import numpy as np
 import pytest
 from uuid import uuid4
 
+os.environ["DATABASE_URL"] = "sqlite:///./test_api.db"
+
+from app.config import settings
 from app.api.main import app
+from app.api.services.security import create_access_token
+from app.db import models
+from app.db.database import SessionLocal
 
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def clean_test_database():
+    with SessionLocal() as db:
+        db.query(models.Note).delete(synchronize_session=False)
+        db.query(models.User).delete(synchronize_session=False)
+        db.commit()
 
 
 def test_health():
@@ -375,7 +391,20 @@ def test_register_does_not_return_password_hash():
     assert "password_hash" not in payload
 
 
-def register_and_login_user():
+def test_access_token_uses_configured_jwt_settings():
+    token = create_access_token({"sub": "configured-user"})
+
+    payload = jwt.decode(
+        token,
+        settings.jwt_secret_key,
+        algorithms=[settings.jwt_algorithm],
+    )
+
+    assert payload["sub"] == "configured-user"
+    assert "exp" in payload
+
+
+def register_and_login_user(admin=False):
     username = f"user-{uuid4()}"
     password = "valid-password"
 
@@ -388,6 +417,16 @@ def register_and_login_user():
         },
     )
     assert register_response.status_code == 200
+    user_id = register_response.json()["id"]
+
+    with SessionLocal() as db:
+        user = (
+            db.query(models.User)
+            .filter(models.User.id == user_id)
+            .first()
+        )
+        user.is_admin = admin
+        db.commit()
 
     login_response = client.post(
         "/auth/login",
@@ -399,7 +438,7 @@ def register_and_login_user():
     assert login_response.status_code == 200
 
     token = login_response.json()["access_token"]
-    return {
+    return user_id, {
         "Authorization": f"Bearer {token}"
     }
 
@@ -411,8 +450,8 @@ def test_notes_require_authentication():
 
 
 def test_notes_are_scoped_to_current_user():
-    first_user_headers = register_and_login_user()
-    second_user_headers = register_and_login_user()
+    _, first_user_headers = register_and_login_user()
+    _, second_user_headers = register_and_login_user()
 
     first_note_response = client.post(
         "/notes/",
@@ -467,8 +506,8 @@ def test_notes_are_scoped_to_current_user():
 
 
 def test_user_cannot_read_or_update_another_users_note():
-    owner_headers = register_and_login_user()
-    other_user_headers = register_and_login_user()
+    _, owner_headers = register_and_login_user()
+    _, other_user_headers = register_and_login_user()
 
     create_response = client.post(
         "/notes/",
@@ -502,3 +541,100 @@ def test_user_cannot_read_or_update_another_users_note():
     )
     assert owner_read_response.status_code == 200
     assert owner_read_response.json()["title"] == "Private note"
+
+
+def test_non_admin_cannot_access_admin_users():
+    _, headers = register_and_login_user()
+
+    response = client.get(
+        "/admin/users",
+        headers=headers,
+    )
+
+    assert response.status_code == 403
+
+
+def test_admin_can_list_and_update_users():
+    _, admin_headers = register_and_login_user(admin=True)
+    user_id, user_headers = register_and_login_user()
+
+    note_response = client.post(
+        "/notes/",
+        headers=user_headers,
+        json={
+            "title": "Managed user's note",
+            "content": "Counted in the admin panel",
+        },
+    )
+    assert note_response.status_code == 200
+
+    list_response = client.get(
+        "/admin/users",
+        headers=admin_headers,
+    )
+    assert list_response.status_code == 200
+
+    managed_user = next(
+        user
+        for user in list_response.json()
+        if user["id"] == user_id
+    )
+    assert managed_user["note_count"] == 1
+    assert managed_user["is_admin"] is False
+
+    update_response = client.put(
+        f"/admin/users/{user_id}",
+        headers=admin_headers,
+        json={
+            "username": f"managed-{uuid4()}",
+            "email": f"{uuid4()}@example.com",
+            "is_admin": True,
+        },
+    )
+    assert update_response.status_code == 200
+    assert update_response.json()["is_admin"] is True
+
+
+def test_admin_can_delete_user_and_notes():
+    _, admin_headers = register_and_login_user(admin=True)
+    user_id, user_headers = register_and_login_user()
+
+    note_response = client.post(
+        "/notes/",
+        headers=user_headers,
+        json={
+            "title": "Deleted with user",
+            "content": "This note should be deleted too",
+        },
+    )
+    assert note_response.status_code == 200
+    note_id = note_response.json()["id"]
+
+    delete_response = client.delete(
+        f"/admin/users/{user_id}",
+        headers=admin_headers,
+    )
+    assert delete_response.status_code == 200
+
+    with SessionLocal() as db:
+        assert db.get(models.User, user_id) is None
+        assert db.get(models.Note, note_id) is None
+
+
+def test_admin_cannot_delete_or_demote_self():
+    admin_id, admin_headers = register_and_login_user(admin=True)
+
+    demote_response = client.put(
+        f"/admin/users/{admin_id}",
+        headers=admin_headers,
+        json={
+            "is_admin": False,
+        },
+    )
+    assert demote_response.status_code == 400
+
+    delete_response = client.delete(
+        f"/admin/users/{admin_id}",
+        headers=admin_headers,
+    )
+    assert delete_response.status_code == 400

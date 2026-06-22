@@ -6,6 +6,44 @@ body {
     padding: 0;
 }
 
+.site-nav {
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.site-nav-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.site-nav-title {
+    font-weight: 700;
+}
+
+.site-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.site-nav a {
+    color: #222;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+    background: #f0f0f0;
+}
+
 .container {
     max-width: 800px;
 
@@ -42,10 +80,50 @@ button {
 .button-row {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 #message {
     min-height: 1.2em;
+}
+
+.hidden {
+    display: none;
+}
+
+.danger {
+    border-color: #9f1d1d;
+    color: #9f1d1d;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+th,
+td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    background: #f5f5f5;
+}
+
+td input {
+    margin: 0;
+}
+
+.center-cell {
+    text-align: center;
 }
 
 .note {
@@ -64,4 +142,11 @@ button {
 
 .delete-btn {
     margin-top: 10px;
+}
+
+@media (max-width: 640px) {
+    .site-nav-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }

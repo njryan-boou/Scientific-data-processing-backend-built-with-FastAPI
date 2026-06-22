@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linalg API</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/linalg_api.css">
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="site-nav-inner">
+        <div class="site-nav-title">Scientific API</div>
+        <div class="site-nav-links">
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="notes.html">Notes</a>
+            <a class="active" href="linalg_api.html">Linalg</a>
+            <a href="stats_api.html">Stats</a>
+            <a href="ode_api.html">ODE</a>
+            <a href="admin.html">Admin</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="tool-header">
+        <div>
+            <h1>Linalg API</h1>
+            <p class="muted">Run matrix operations against the FastAPI backend.</p>
+        </div>
+
+        <div class="button-row">
+            <button onclick="loadExample()">Example</button>
+            <button onclick="clearForm()">Clear</button>
+        </div>
+    </div>
+
+    <div class="grid">
+        <section class="panel">
+            <h2>Operation</h2>
+
+            <div id="operations" class="operation-list"></div>
+        </section>
+
+        <section class="panel">
+            <h2>Inputs</h2>
+
+            <label for="matrix-a">Matrix A</label>
+            <textarea
+                id="matrix-a"
+                class="matrix-input"
+                spellcheck="false"
+            >[[1, 2], [3, 4]]</textarea>
+
+            <div id="matrix-b-wrap">
+                <label for="matrix-b">Matrix B</label>
+                <textarea
+                    id="matrix-b"
+                    class="matrix-input"
+                    spellcheck="false"
+                >[[5, 6], [7, 8]]</textarea>
+            </div>
+
+            <div id="scalar-wrap" class="scalar-row">
+                <label for="scalar">Scalar</label>
+                <input id="scalar" type="number" value="2" step="any">
+            </div>
+        </section>
+    </div>
+
+    <div class="button-row run-row">
+        <button onclick="runOperation()">Run Operation</button>
+    </div>
+
+    <p id="status"></p>
+
+    <section class="panel">
+        <h2>Result</h2>
+        <pre id="result" class="output">Choose an operation and run it.</pre>
+    </section>
+</div>
+
+<script src="js/linear_algebra_api.js"></script>
+
+</body>
+</html>

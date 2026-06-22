@@ -1,0 +1,98 @@
+.tool-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.tool-header h1 {
+    margin-bottom: 6px;
+}
+
+.muted {
+    color: #555;
+    margin-top: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.panel {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.panel h2 {
+    font-size: 1.05rem;
+    margin-top: 0;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+}
+
+.input-grid input {
+    margin: 0;
+}
+
+.operation-list {
+    display: grid;
+    gap: 8px;
+}
+
+.operation-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.operation-option input {
+    width: auto;
+    margin: 0;
+}
+
+.run-row {
+    margin-top: 18px;
+}
+
+.output {
+    background: #111;
+    color: #f4f4f4;
+    border-radius: 8px;
+    padding: 14px;
+    min-height: 160px;
+    overflow: auto;
+    white-space: pre-wrap;
+    font-family: Consolas, monospace;
+}
+
+.status-error {
+    color: #9f1d1d;
+}
+
+.status-ok {
+    color: #236b2e;
+}
+
+@media (max-width: 760px) {
+    .grid,
+    .input-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tool-header {
+        flex-direction: column;
+    }
+}
