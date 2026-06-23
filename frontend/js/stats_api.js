@@ -95,7 +95,7 @@ async function runOperation() {
     const output = document.getElementById("result");
 
     setStatus("");
-    output.textContent = "Running...";
+    setResultMessage(output, "Running...");
 
     let payload;
 
@@ -105,7 +105,7 @@ async function runOperation() {
         };
     } catch (error) {
         setStatus(error.message, true);
-        output.textContent = "Fix the input and try again.";
+        setResultMessage(output, "Fix the input and try again.");
         return;
     }
 
@@ -125,15 +125,15 @@ async function runOperation() {
 
         if (!response.ok) {
             setStatus(formatApiError(data), true);
-            output.textContent = JSON.stringify(data, null, 2);
+            renderApiError(output, data);
             return;
         }
 
         setStatus("Operation completed.", false);
-        output.textContent = JSON.stringify(data, null, 2);
+        renderApiResult(output, data);
     } catch {
         setStatus("Could not connect to the API.", true);
-        output.textContent = "Start FastAPI on http://127.0.0.1:8001 and try again.";
+        setResultMessage(output, "Start FastAPI on http://127.0.0.1:8001 and try again.");
     }
 }
 
@@ -153,12 +153,12 @@ function setStatus(message, isError = false) {
 
 function loadExample() {
     document.getElementById("vector").value = "[1, 2, 3, 4, 5]";
-    document.getElementById("result").textContent = "Choose an operation and run it.";
+    setResultMessage(document.getElementById("result"), "Choose an operation and run it.");
     setStatus("");
 }
 
 function clearForm() {
     document.getElementById("vector").value = "";
-    document.getElementById("result").textContent = "";
+    setResultMessage(document.getElementById("result"), "");
     setStatus("");
 }

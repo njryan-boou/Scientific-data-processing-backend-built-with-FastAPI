@@ -189,7 +189,7 @@ async function runOperation() {
     const output = document.getElementById("result");
 
     setStatus("");
-    output.textContent = "Running...";
+    setResultMessage(output, "Running...");
 
     let payload;
 
@@ -197,7 +197,7 @@ async function runOperation() {
         payload = buildPayload(operation);
     } catch (error) {
         setStatus(error.message, true);
-        output.textContent = "Fix the input and try again.";
+        setResultMessage(output, "Fix the input and try again.");
         return;
     }
 
@@ -217,15 +217,15 @@ async function runOperation() {
 
         if (!response.ok) {
             setStatus(formatApiError(data), true);
-            output.textContent = JSON.stringify(data, null, 2);
+            renderApiError(output, data);
             return;
         }
 
         setStatus("Operation completed.", false);
-        output.textContent = JSON.stringify(data, null, 2);
+        renderApiResult(output, data);
     } catch {
         setStatus("Could not connect to the API.", true);
-        output.textContent = "Start FastAPI on http://127.0.0.1:8001 and try again.";
+        setResultMessage(output, "Start FastAPI on http://127.0.0.1:8001 and try again.");
     }
 }
 
@@ -247,7 +247,7 @@ function loadExample() {
     document.getElementById("matrix-a").value = "[[1, 2], [3, 4]]";
     document.getElementById("matrix-b").value = "[[5, 6], [7, 8]]";
     document.getElementById("scalar").value = "2";
-    document.getElementById("result").textContent = "Choose an operation and run it.";
+    setResultMessage(document.getElementById("result"), "Choose an operation and run it.");
     setStatus("");
 }
 
@@ -255,6 +255,6 @@ function clearForm() {
     document.getElementById("matrix-a").value = "";
     document.getElementById("matrix-b").value = "";
     document.getElementById("scalar").value = "";
-    document.getElementById("result").textContent = "";
+    setResultMessage(document.getElementById("result"), "");
     setStatus("");
 }

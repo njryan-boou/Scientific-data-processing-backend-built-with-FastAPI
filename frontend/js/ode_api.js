@@ -86,7 +86,7 @@ async function runOperation() {
     const output = document.getElementById("result");
 
     setStatus("");
-    output.textContent = "Running...";
+    setResultMessage(output, "Running...");
 
     let payload;
 
@@ -94,7 +94,7 @@ async function runOperation() {
         payload = buildPayload();
     } catch (error) {
         setStatus(error.message, true);
-        output.textContent = "Fix the input and try again.";
+        setResultMessage(output, "Fix the input and try again.");
         return;
     }
 
@@ -114,15 +114,15 @@ async function runOperation() {
 
         if (!response.ok) {
             setStatus(formatApiError(data), true);
-            output.textContent = JSON.stringify(data, null, 2);
+            renderApiError(output, data);
             return;
         }
 
         setStatus("Solver completed.", false);
-        output.textContent = JSON.stringify(data, null, 2);
+        renderApiResult(output, data);
     } catch {
         setStatus("Could not connect to the API.", true);
-        output.textContent = "Start FastAPI on http://127.0.0.1:8001 and try again.";
+        setResultMessage(output, "Start FastAPI on http://127.0.0.1:8001 and try again.");
     }
 }
 
@@ -145,7 +145,7 @@ function loadExample() {
     document.getElementById("t0").value = "0";
     document.getElementById("step-size").value = "0.5";
     document.getElementById("steps").value = "5";
-    document.getElementById("result").textContent = "Choose a method and run it.";
+    setResultMessage(document.getElementById("result"), "Choose a method and run it.");
     setStatus("");
 }
 
@@ -154,6 +154,6 @@ function clearForm() {
     document.getElementById("t0").value = "";
     document.getElementById("step-size").value = "";
     document.getElementById("steps").value = "";
-    document.getElementById("result").textContent = "";
+    setResultMessage(document.getElementById("result"), "");
     setStatus("");
 }
