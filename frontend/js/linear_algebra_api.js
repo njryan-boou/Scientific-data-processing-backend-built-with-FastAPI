@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8001";
+const API_URL = "https://scientific-api-1ufm.onrender.com";
 
 const operations = [
     {
@@ -203,7 +203,7 @@ async function runOperation() {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}${operation.path}`,
+            `${API_URL}${operation.path}`,
             {
                 method: "POST",
                 headers: {

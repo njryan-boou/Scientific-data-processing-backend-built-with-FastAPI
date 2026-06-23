@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8001";
+const API_URL = "https://scientific-api-1ufm.onrender.com";
 
 async function login() {
     const username = document.getElementById("username").value.trim();
@@ -14,7 +14,7 @@ async function login() {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/auth/login`,
+            `${API_URL}/auth/login`,
             {
                 method: "POST",
                 headers: {
@@ -56,7 +56,7 @@ async function register() {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/auth/register`,
+            `${API_URL}/auth/register`,
             {
                 method: "POST",
                 headers: {

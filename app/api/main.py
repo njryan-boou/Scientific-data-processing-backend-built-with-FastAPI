@@ -89,7 +89,9 @@ Built with FastAPI and C++.
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=list(settings.cors_origins),
+    allow_origins=[
+        "https://scientific-data-processing-backend.vercel.app/"
+        ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

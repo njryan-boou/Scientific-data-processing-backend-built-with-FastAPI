@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8001";
+const API_URL = "https://scientific-api-1ufm.onrender.com";
 
 window.onload = initializeNotesPage;
 
@@ -16,7 +16,7 @@ async function apiFetch(path, options = {}) {
     }
 
     const response = await fetch(
-        `${API_BASE_URL}${path}`,
+        `${API_URL}${path}`,
         {
             ...options,
             headers: {
