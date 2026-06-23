@@ -215,7 +215,7 @@ function formatLabel(key) {
 
 function formatValue(value) {
     if (typeof value === "number") {
-        return Number.isInteger(value) ? String(value) : Number(value.toPrecision(8)).toString();
+        return Number.isInteger(value) ? String(value) : value.toFixed(4);
     }
 
     if (isPlainObject(value) && "real" in value && "imag" in value) {
