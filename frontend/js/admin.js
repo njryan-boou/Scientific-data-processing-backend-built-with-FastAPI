@@ -52,7 +52,8 @@ async function loadUsers() {
         }
 
         if (!response.ok) {
-            setMessage("Could not load users.");
+            const error = await response.json().catch(() => null);
+            setMessage(getApiErrorMessage(error, "Could not load users."));
             table.innerHTML = "";
             return;
         }
@@ -131,7 +132,7 @@ async function saveUser(id) {
 
     if (!response.ok) {
         const error = await response.json().catch(() => null);
-        setMessage(error?.detail || "Could not save user.");
+        setMessage(getApiErrorMessage(error, "Could not save user."));
         return;
     }
 
@@ -155,7 +156,7 @@ async function deleteUser(id) {
 
     if (!response.ok) {
         const error = await response.json().catch(() => null);
-        setMessage(error?.detail || "Could not delete user.");
+        setMessage(getApiErrorMessage(error, "Could not delete user."));
         return;
     }
 

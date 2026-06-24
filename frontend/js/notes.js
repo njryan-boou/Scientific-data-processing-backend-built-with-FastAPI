@@ -62,7 +62,8 @@ async function loadNotes() {
         }
 
         if (!response.ok) {
-            container.innerHTML = "Could not load notes.";
+            const error = await response.json().catch(() => null);
+            container.textContent = getApiErrorMessage(error, "Could not load notes.");
             return;
         }
 
@@ -121,7 +122,13 @@ async function createNote() {
         }
     );
 
-    if (!response || !response.ok) {
+    if (!response) {
+        return;
+    }
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        document.getElementById("notes").textContent = getApiErrorMessage(error, "Could not create note.");
         return;
     }
 
@@ -138,7 +145,13 @@ async function deleteNote(id) {
         }
     );
 
-    if (!response || !response.ok) {
+    if (!response) {
+        return;
+    }
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        document.getElementById("notes").textContent = getApiErrorMessage(error, "Could not delete note.");
         return;
     }
 

@@ -1,21 +1,15 @@
-// vector_demo.cpp
+#include "../include/Vector.hpp"
+#include "../include/Matrix.hpp"
 #include <iostream>
-#include "Vector.hpp"
-#include "Matrix.hpp"
+#include <exception>
 
-int main() {
-    Matrix mat1 = {
-        {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0}
+int main()
+{
+    Vector v1 = {1.0, 2.0, 3.0};
+    Vector v2 = {4.0, 5.0, 6.0
     };
-
-    Matrix mat2 = {
-        {7.0, 8.0, 9.0},
-        {10.0, 11.0, 12.0}
-    };
-
-    Matrix result = mat1.matmul(mat2);
-    result.print();
+    Vector v3 = v1 + v2;
+    std::cout << "v1 + v2 = " << v3 << std::endl;
 
     return 0;
 }

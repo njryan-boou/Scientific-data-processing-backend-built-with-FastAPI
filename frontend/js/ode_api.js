@@ -113,7 +113,7 @@ async function runOperation() {
         const data = await response.json();
 
         if (!response.ok) {
-            setStatus(formatApiError(data), true);
+            setStatus(getApiErrorMessage(data, "Could not run this solver."), true);
             renderApiError(output, data);
             return;
         }
@@ -124,14 +124,6 @@ async function runOperation() {
         setStatus("Could not connect to the API.", true);
         setResultMessage(output, "Start FastAPI on http://127.0.0.1:8001 and try again.");
     }
-}
-
-function formatApiError(data) {
-    if (typeof data.detail === "string") {
-        return data.detail;
-    }
-
-    return "The API rejected the request.";
 }
 
 function setStatus(message, isError = false) {

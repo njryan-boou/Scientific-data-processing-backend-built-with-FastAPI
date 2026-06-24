@@ -31,9 +31,7 @@ function renderApiResult(output, data) {
 function renderApiError(output, data) {
     output.replaceChildren();
     output.classList.add("output-formatted", "output-error");
-
-    const detail = isPlainObject(data) ? data.detail : data;
-    output.appendChild(renderErrorDetail(detail));
+    output.appendChild(renderErrorDetail(data));
 }
 
 function renderResultEntry(label, value) {
@@ -147,22 +145,15 @@ function renderOdeTable(data) {
 }
 
 function renderErrorDetail(detail) {
-    if (Array.isArray(detail)) {
+    const items = getApiErrorItems(detail);
+
+    if (items.length > 1) {
         const list = document.createElement("ul");
         list.className = "result-error-list";
 
-        detail.forEach(item => {
+        items.forEach(item => {
             const listItem = document.createElement("li");
-
-            if (isPlainObject(item)) {
-                const location = Array.isArray(item.loc) ? item.loc.join(" > ") : "";
-                listItem.textContent = location
-                    ? `${location}: ${item.msg || JSON.stringify(item)}`
-                    : item.msg || JSON.stringify(item);
-            } else {
-                listItem.textContent = String(item);
-            }
-
+            listItem.textContent = item;
             list.appendChild(listItem);
         });
 
@@ -171,9 +162,7 @@ function renderErrorDetail(detail) {
 
     const message = document.createElement("p");
     message.className = "result-error-message";
-    message.textContent = typeof detail === "string"
-        ? detail
-        : JSON.stringify(detail, null, 2);
+    message.textContent = items[0] || getApiErrorMessage(detail);
     return message;
 }
 

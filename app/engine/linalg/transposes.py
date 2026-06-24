@@ -1,6 +1,7 @@
 import numpy as np
 from app.engine.utils import validation
 from app.types import Matrix
+import matrix_engine as me
 
 def transpose(matrix: Matrix) -> Matrix:
 

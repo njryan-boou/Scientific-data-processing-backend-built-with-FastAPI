@@ -29,7 +29,7 @@ async function login() {
 
         if (!response.ok) {
             const error = await response.json().catch(() => null);
-            message.textContent = error?.detail || "Login failed.";
+            message.textContent = getApiErrorMessage(error, "Login failed.");
             return;
         }
 
@@ -72,7 +72,7 @@ async function register() {
 
         if (!response.ok) {
             const error = await response.json().catch(() => null);
-            message.textContent = error?.detail || "Registration failed.";
+            message.textContent = getApiErrorMessage(error, "Registration failed.");
             return;
         }
 
