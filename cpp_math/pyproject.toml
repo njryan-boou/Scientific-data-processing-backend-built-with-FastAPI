@@ -7,7 +7,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "matrix_engine"
-version = "0.1.0"
+version = "1.1.0"
 description = "C++ matrix and vector engine with pybind11 bindings"
 readme = "README.md"
 requires-python = ">=3.11"
